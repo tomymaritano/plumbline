@@ -14,7 +14,7 @@
       "name": "plumbline",
       "source": "./",
       "description": "A plumb line for AI coding — agent skills that check code against the philosophy of software design.",
-      "version": "1.5.0",
+      "version": "1.6.0",
       "category": "productivity",
       "tags": [
         "software-design",

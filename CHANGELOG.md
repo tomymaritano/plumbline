@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.6.0
+
+### Added
+
+- **Rust and Go guides** for `red-flags` (`references/rust.md`, `references/go.md`): the idiomatic shapes each flag takes, such as single-impl traits and cfg-duplicated logic in Rust, producer-side interfaces and context-free `return err` chains in Go.
+- **An eval suite for every skill.** The 13 skills that had none now have one (2 positive cases + 1 negative each, with baselines). New sandboxed suites: `red-flags-scale` (a ~2,000-line repo on disk with git history, measuring the reading strategy) and `apply-fixes`; see `evals/MAC.md`.
+
 ## 1.5.0
 
 ### Added
