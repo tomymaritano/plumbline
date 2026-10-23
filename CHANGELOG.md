@@ -4,8 +4,14 @@
 
 ### Added
 
+- **`fault-locality`.** For a panic, a stack, or a red test: name the function that made the bad value, and edit there on `apply`. A missing path to a policy the module already has is `policy`, not a design review. A nil check at the crash is a failed run.
+- **`evals/fault-locality/`.** Five cases. The suite has not been run.
 - **`test-worth`.** One skill that decides which tests to write and which to keep. A test stays only if it pays for itself (protection, resistance to refactoring, fast feedback, maintainability). The rule lives in `skills/test-worth/references/pillars.md`. Smells, size bands, and the procedures for writing, test-driving, and characterizing point at that file and do not restate it. `diagnose`, `red-flags`, `design-review`, and `apply-fixes` hand test questions to it.
 - **Pull request signature.** After applying Plumbline skills, an agent that opens a pull request (or edits the body of one it opened) ends that body with one `Plumbline-Skills:` line listing the skills whose checks actually ran. The wording is shared from `scripts/pr-signature-section.md` and checked on every skill.
+
+### Changed
+
+- **`diagnose`, `red-flags`, and `test-worth`.** A panic, a stack, or a failing test goes to `fault-locality`. A question about which tests to write or keep still goes to `test-worth`. Those suites were not re-run with this description change.
 
 ## 1.8.0
 

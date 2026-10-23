@@ -1,6 +1,6 @@
 ---
 name: test-worth
-description: "Use when the user asks which tests to write or keep, asks to add or review tests, says a test breaks whenever the implementation changes, or asks whether a mock, a private-method test, or a characterization test is worth it (\"what should I test?\", \"this test is brittle\", \"are these tests locking us in?\"). Judges every test by one acceptance rule: it stays only if it pays for itself. Not for fixing a failing test or a bug the user already identified (fix it directly), not for applying a design report (use apply-fixes), and not for a design smell in production code (use red-flags or the matching lens)."
+description: "Use when the user asks which tests to write or keep, asks to add or review tests, says a test breaks whenever the implementation changes, or asks whether a mock, a private-method test, or a characterization test is worth it (\"what should I test?\", \"this test is brittle\", \"are these tests locking us in?\"). Judges every test by one acceptance rule: it stays only if it pays for itself. Not for fixing a failing test or a bug the user already identified (use fault-locality), not for applying a design report (use apply-fixes), and not for a design smell in production code (use red-flags or the matching lens)."
 argument-hint: "[file, test, or behavior to judge]"
 allowed-tools: Read, Grep, Edit, Write, Bash(git status:*), Bash(git diff:*)
 ---
@@ -53,6 +53,7 @@ Judge does not run the command. A verdict does not depend on a green suite.
 
 ## What this skill does not do
 
+- It does not fix a failing test or a bug the user already identified. That goes to **fault-locality**.
 - It does not redesign production code so a test can reach it. When the only way to observe the behavior is to publish private state, the verdict is `don't-write` and the note names **deep-modules** or **information-hiding**. It does not propose the split.
 - It does not write `.plumbline/findings.md`. That file is the design-flag log.
 - It does not commit unless the user asks.

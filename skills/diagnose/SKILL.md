@@ -1,6 +1,6 @@
 ---
 name: diagnose
-description: "Use when the user describes a design symptom and says they don't know what kind of problem it is or which review to run (\"something about this is off but I can't tell what\", \"where do I even start with this?\"). Routes the symptom to the right Plumbline lens with a decision tree and says when there is no structural problem. When the symptom already points at one lens (a naming struggle, error-handling sprawl, a change that touches many files), use that lens directly. Not for a comprehensive review (use design-review) or a checklist scan (use red-flags)."
+description: "Use when the user describes a design symptom and says they don't know what kind of problem it is or which review to run (\"something about this is off but I can't tell what\", \"where do I even start with this?\"). Routes the symptom to the right Plumbline lens with a decision tree and says when there is no structural problem. When the symptom already points at one lens (a naming struggle, error-handling sprawl, a change that touches many files), use that lens directly. Not for a panic, a stack trace, or a failing test (use fault-locality). Not for a comprehensive review (use design-review) or a checklist scan (use red-flags)."
 argument-hint: "[description of the symptom or problem]"
 allowed-tools: Read, Grep
 ---
@@ -10,6 +10,12 @@ allowed-tools: Read, Grep
 When invoked with $ARGUMENTS, match the described symptom against the decision tree below and route to the appropriate skill. If code paths are referenced, read them first to confirm the match before routing. This skill routes to other skills from Plumbline (https://github.com/tomymaritano/plumbline). It works best when the full collection is installed.
 
 ## Decision Tree
+
+### 0. "It panics / the test is red / here is the stack"
+
+The report is a wrong output, a panic, or a failing test. The question is where it may be fixed.
+
+→ **fault-locality**: Name the function that made the bad value. Do not route this to a design lens.
 
 ### 1. "Something feels wrong but I can't say what"
 
@@ -82,7 +88,9 @@ What to write, what to keep, a test that breaks when the implementation changes,
 
 When the description maps to more than one root symptom, prioritize in this order:
 
-0. **Tests** (symptom 10): If the thing being complained about is tests, route to **test-worth** first, even when the wording also sounds structural. `test-worth` hands back to a design lens if the defect is production structure.
+A panic, a stack, or a red test (branch 0) goes to **fault-locality** before the items below.
+
+0. **Tests** (symptom 10): If the thing being complained about is which tests to write or keep, route to **test-worth** first, even when the wording also sounds structural. `test-worth` hands back to a design lens if the defect is production structure. A failing test is branch 0, not this one.
 1. **Structural** (symptoms 1–6): These address the shape of the code and have the highest design leverage.
 2. **Process** (symptom 8): This addresses how work is done. Important but downstream of structure.
 3. **Surface** (symptom 7): Comment/doc issues are often symptoms of deeper structural problems. Fixing structure first may resolve them.

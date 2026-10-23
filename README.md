@@ -15,7 +15,7 @@ Skills activate automatically and push your agent to ask questions like:
 - *Can this method be understood without reading another one in a different file?*
 - *Is error handling pushing work onto callers that the module could handle itself?*
 
-You can also invoke them directly. Use `/plumbline:red-flags` to trigger a design smell scan, `/plumbline:apply-fixes` to apply its findings with the tests as a safety net, `/plumbline:deep-modules` to check interface depth, `/plumbline:design-it-twice` to compare alternatives before committing, and `/plumbline:test-worth` to decide which tests to write or keep. (On platforms that install the skills without the plugin namespace, such as skills.sh, drop the `plumbline:` prefix.)
+You can also invoke them directly. Use `/plumbline:red-flags` to trigger a design smell scan, `/plumbline:apply-fixes` to apply its findings with the tests as a safety net, `/plumbline:deep-modules` to check interface depth, `/plumbline:design-it-twice` to compare alternatives before committing, `/plumbline:test-worth` to decide which tests to write or keep, and `/plumbline:fault-locality` to find where a panic or a red test may be fixed. (On platforms that install the skills without the plugin namespace, such as skills.sh, drop the `plumbline:` prefix.)
 
 When those skills are applied and the agent opens a pull request (or edits the body of one it opened), it signs the PR with the skills whose checks actually ran:
 
@@ -53,7 +53,7 @@ codex plugin marketplace add tomymaritano/plumbline
 codex plugin add plumbline@plumbline
 ```
 
-Older Codex versions only get the 18 skills, via a manual symlink — see [.codex/INSTALL.md](.codex/INSTALL.md) for that fallback and full troubleshooting.
+Older Codex versions only get the 19 skills, via a manual symlink — see [.codex/INSTALL.md](.codex/INSTALL.md) for that fallback and full troubleshooting.
 
 ### Cursor
 
@@ -63,7 +63,7 @@ Cursor doesn't yet have a one-line "install from a GitHub URL" flow for unlisted
 git clone https://github.com/tomymaritano/plumbline.git ~/.cursor/plugins/local/plumbline
 ```
 
-Then check the **Customize** panel in the sidebar to confirm Plumbline and its 18 skills are listed.
+Then check the **Customize** panel in the sidebar to confirm Plumbline and its 19 skills are listed.
 
 ### OpenCode
 
@@ -99,7 +99,7 @@ grok plugin marketplace add tomymaritano/plumbline
 grok plugin install plumbline
 ```
 
-Or install straight from the repo with `grok plugin install tomymaritano/plumbline`. Add `--trust` to skip the confirmation prompt, then run `/plugin` to check that Plumbline and its 18 skills are listed.
+Or install straight from the repo with `grok plugin install tomymaritano/plumbline`. Add `--trust` to skip the confirmation prompt, then run `/plugin` to check that Plumbline and its 19 skills are listed.
 
 ### GitHub Copilot CLI
 
@@ -198,6 +198,7 @@ A reusable GitHub Actions workflow runs `code-evolution` on each pull request an
 | --- | --- |
 | `red-flags` | 18-flag design smell scan covering structure, boundaries (including adapters that re-implement the core's vocabulary), documentation, naming, and process. Separates real problems from documented trade-offs, has a reading strategy for large multi-package targets, and ships Python, TypeScript, Rust and Go guides |
 | `design-review` | Structured review funnel from complexity triage through structural, interface, and surface checks |
+| `fault-locality` | Where a failure may be fixed. The edit belongs in the function that made the bad value, or on the missing path to a policy the module already has. A nil check at the crash is the wrong layer |
 | `diagnose` | Routes a vague symptom or complaint to the most relevant skill via a decision tree |
 | `apply-fixes` | Applies a report's findings one fix at a time, running the tests after each and reverting any fix that breaks them; flags fixes no test covers, asks before changing a public interface, and can commit each fix separately |
 
@@ -211,7 +212,7 @@ A reusable GitHub Actions workflow runs `code-evolution` on each pull request an
 
 - **No network calls, no credentials.** The skills are Markdown instructions. Plumbline sends nothing anywhere and needs no API key (the optional CI workflow uses your own `ANTHROPIC_API_KEY`, see [docs/ci-review.md](docs/ci-review.md)).
 - **Hooks are opt-in and local.** The review-on-stop hook is two dependency-free Node scripts in `hooks/`, matched only on `Edit|Write|MultiEdit` and `Stop`. They do nothing unless you turn the option on. When on, they record which code files a turn edited (path and line count) in Claude Code's plugin data folder, and delete it at the end of each turn. They read no file contents and run no shell commands.
-- **Skills that change code ask first.** `apply-fixes` is the only skill that edits production code to apply a design finding; it asks before public-interface changes and never commits unless you choose commit mode. `test-worth` may create or edit test files after asking, and may edit production code only inside a test-first loop the user explicitly asked for, one scenario at a time. Review skills are read-only apart from `git log`/`diff`/`show` and the optional `.plumbline/findings.md` they offer to write.
+- **Skills that change code ask first.** `apply-fixes` is the only skill that edits production code to apply a design finding; it asks before public-interface changes and never commits unless you choose commit mode. `test-worth` may create or edit test files after asking, and may edit production code only inside a test-first loop the user explicitly asked for, one scenario at a time. `fault-locality` edits only on the `apply` route, and only the function that made the bad value or the missing path to a policy the module already has. Review skills are read-only apart from `git log`/`diff`/`show` and the optional `.plumbline/findings.md` they offer to write.
 
 ## Attribution
 

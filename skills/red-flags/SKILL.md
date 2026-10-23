@@ -1,6 +1,6 @@
 ---
 name: red-flags
-description: "Scans code against 18 design smells (the book's 14 named Red Flags plus 4 additional signals) and produces a structured diagnostic report. Use when the user asks for a red flags or design smell scan, asks to check code against a checklist, is evaluating unfamiliar code, or asks open-endedly whether anything is off in a named or pasted file, class, or function with no more specific concern. When the user names a concern (an interface that feels clunky, error handling, naming, comments, redundant layers, a change that touches many files), use the matching lens instead. Not for a specific bug, error, or failing test the user has already identified. Not for a plain diff or PR review before merge (use code-evolution), diagnosing why code feels complex (use complexity-recognition), or a question about the tests, including which to write or keep (use test-worth)."
+description: "Scans code against 18 design smells (the book's 14 named Red Flags plus 4 additional signals) and produces a structured diagnostic report. Use when the user asks for a red flags or design smell scan, asks to check code against a checklist, is evaluating unfamiliar code, or asks open-endedly whether anything is off in a named or pasted file, class, or function with no more specific concern. When the user names a concern (an interface that feels clunky, error handling, naming, comments, redundant layers, a change that touches many files), use the matching lens instead. Not for a specific bug, error, or failing test (use fault-locality). Not for a plain diff or PR review before merge (use code-evolution), diagnosing why code feels complex (use complexity-recognition), or a question about the tests, including which to write or keep (use test-worth)."
 argument-hint: "[file or directory]"
 allowed-tools: Read, Grep, Bash(git log:*), Bash(git diff:*), Bash(git show:*)
 ---
@@ -267,7 +267,7 @@ For a target over about 1,000 lines or spanning several packages, don't read it 
 
 ## Review Process
 
-If the question is about the tests, stop and use **test-worth**.
+If the report is a panic, a stack, or a failing test, stop and use **fault-locality**. If the question is which tests to write or keep, stop and use **test-worth**.
 
 0. **Check for a findings file**: if the project has `.plumbline/findings.md`, read it before scanning. It records earlier findings, their status and accepted trade-offs; see [references/findings-file.md](references/findings-file.md).
 1. **Identify scope**: file, module, PR diff, or class. If the code under review is written in Python, TypeScript, Rust or Go, read the matching guide first: [references/python.md](references/python.md), [references/typescript.md](references/typescript.md), [references/rust.md](references/rust.md) or [references/go.md](references/go.md). Each lists the idiomatic shapes the flags take in that language. Go by the language the files are written in, not the language a binding or SDK exposes (Rust bindings for Python are Rust). For a large or multi-package target, follow the Reading Strategy above.
