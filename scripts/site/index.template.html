@@ -4,27 +4,91 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Plumbline</title>
-  <meta name="description" content="A plumb line for AI coding: agent skills that check code against the philosophy of software design.">
+  <meta name="description" content="A plumb line for AI coding. Skills that tell your agent whether a design is still straight.">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<main>
-  <header class="hero">
-    <h1><span class="plumb"></span>Plumbline</h1>
-    <p>Agent skills that check code against <em>A Philosophy of Software Design</em>. Like a builder's plumb line, each skill gives your agent a simple, concrete test for whether the design is still standing straight, during implementation and review.</p>
-    <div class="meta">v{{VERSION}} · <a href="{{REPO}}">GitHub</a> · <a href="{{REPO}}/releases">Releases</a> · <a href="{{REPO}}#installation">All install options</a></div>
-  </header>
+<div class="frame">
+  {{RAIL}}
+  <main>
+    <header class="mast">
+      <p class="stamp"><a href="{{REPO}}">GitHub</a> · v{{VERSION}}</p>
+      <h1 class="word">Plumbline</h1>
+      <p class="thesis">A plumb line tells you a wall is vertical. These skills tell your agent whether a design still is.</p>
+    </header>
 
-  <section class="install">
-    <h2>Install in Claude Code</h2>
-    <pre><code>/plugin marketplace add tomymaritano/plumbline
+    <section class="block">
+      <h2 class="label">The check</h2>
+      <ul class="asks">
+        <li>Does this interface hide real complexity, or just pass things through?</li>
+        <li>Can this method be understood without reading another one in a different file?</li>
+        <li>Is error handling pushing work onto callers that the module could handle itself?</li>
+      </ul>
+    </section>
+
+    <section class="block" id="install">
+      <h2 class="label">Install</h2>
+      <p class="blurb">Once per tool. Installing it in Claude Code does not install it in Cursor.</p>
+      <div class="hosts">
+        <div class="host-tabs" role="radiogroup" aria-label="Which tool you use">
+          <label class="host-tab" for="host-claude">Claude Code<input type="radio" name="host" id="host-claude" checked></label>
+          <label class="host-tab" for="host-skills">skills.sh<input type="radio" name="host" id="host-skills"></label>
+          <label class="host-tab" for="host-codex">Codex<input type="radio" name="host" id="host-codex"></label>
+          <label class="host-tab" for="host-cursor">Cursor<input type="radio" name="host" id="host-cursor"></label>
+          <label class="host-tab" for="host-grok">Grok<input type="radio" name="host" id="host-grok"></label>
+          <label class="host-tab" for="host-copilot">Copilot<input type="radio" name="host" id="host-copilot"></label>
+          <label class="host-tab" for="host-other">Other<input type="radio" name="host" id="host-other"></label>
+        </div>
+        <div class="host-panels">
+          <div class="panel panel-claude">
+            <pre><code>/plugin marketplace add tomymaritano/plumbline
 /plugin install plumbline@plumbline-plugins</code></pre>
-    <p class="meta">Also for Codex, Cursor, Grok Build, OpenCode, Copilot CLI, Kimi, Pi and any Agent Skills host via <code>npx skills add tomymaritano/plumbline --skill '*'</code>.</p>
-  </section>
-{{SKILLS}}
-  <footer>
-    Inspired by John Ousterhout's <a href="https://web.stanford.edu/~ouster/cgi-bin/aposd.php"><em>A Philosophy of Software Design</em></a>. Not affiliated with or endorsed by the author or his publishers. Read the book. · MIT License
-  </footer>
-</main>
+          </div>
+          <div class="panel panel-skills">
+            <pre><code>npx skills add tomymaritano/plumbline --skill '*'</code></pre>
+            <p class="note">On a host that installs the skills without the plugin namespace, drop the <code>plumbline:</code> prefix when you call one.</p>
+          </div>
+          <div class="panel panel-codex">
+            <pre><code>codex plugin marketplace add tomymaritano/plumbline
+codex plugin add plumbline@plumbline</code></pre>
+            <p class="note">Needs Codex CLI 0.142.0 or newer. The app and the CLI share this install.</p>
+          </div>
+          <div class="panel panel-cursor">
+            <pre><code>git clone https://github.com/tomymaritano/plumbline.git ~/.cursor/plugins/local/plumbline</code></pre>
+            <p class="note">Restart Cursor, then check the Customize panel.</p>
+          </div>
+          <div class="panel panel-grok">
+            <pre><code>grok plugin install tomymaritano/plumbline</code></pre>
+            <p class="note">Add <code>--trust</code> to skip the confirmation. <code>/plugin</code> lists what installed.</p>
+          </div>
+          <div class="panel panel-copilot">
+            <pre><code>copilot plugin marketplace add tomymaritano/plumbline
+copilot plugin install plumbline@plumbline-plugins</code></pre>
+          </div>
+          <div class="panel panel-other">
+            <p class="note">OpenCode, Antigravity, Factory Droid, Kimi, and Pi each have their own command. <a href="{{REPO}}#installation">Every install is on GitHub.</a></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="block">
+      <h2 class="label">Start here</h2>
+      <p class="blurb">When you don't already know which check to run.</p>
+      <div class="legend">{{ENTRIES}}</div>
+    </section>
+
+    <section class="block">
+      <h2 class="label">The checks</h2>
+      {{SKILLS}}
+    </section>
+
+    <footer>
+      <p>Inspired by John Ousterhout's <a href="https://web.stanford.edu/~ouster/cgi-bin/aposd.php"><em>A Philosophy of Software Design</em></a>. Not affiliated with or endorsed by the author or his publishers. Read the book.</p>
+      <p><code>test-worth</code> follows Vladimir Khorikov, and it is not a design lens. Not affiliated with or endorsed by him.</p>
+      <p><a href="{{REPO}}">GitHub</a> · <a href="{{REPO}}/releases">Releases</a> · MIT License</p>
+    </footer>
+  </main>
+</div>
 </body>
 </html>
