@@ -1,6 +1,6 @@
 ---
 name: apply-fixes
-description: "Applies the findings of a design review one fix at a time, running the project's tests after each and reverting any fix that breaks them. Use when the user asks to apply, implement or fix the findings of a red-flags scan, design-review or another Plumbline report, or says to go ahead with the recommended design changes. Not for fixing a specific bug, error or failing test (fix it directly), and not for reviewing code (use red-flags or design-review first)."
+description: "Applies the findings of a design review one fix at a time, running the project's tests after each and reverting any fix that breaks them. Use when the user asks to apply, implement or fix the findings of a red-flags scan, design-review or another Plumbline report, or says to go ahead with the recommended design changes. Not for fixing a specific bug, error or failing test (use fault-locality), and not for reviewing code (use red-flags or design-review first)."
 argument-hint: "[report file, or which findings to apply]"
 allowed-tools: Read, Grep, Edit, Write, Bash(git status:*), Bash(git diff:*), Bash(git log:*), Bash(git checkout:*), Bash(git add:*), Bash(git commit:*)
 ---
@@ -19,7 +19,7 @@ A design fix is a refactor: behavior must not change. The tests are the contract
 
 ## When NOT to Apply
 
-- A bug, crash or failing test: fix it directly, this procedure would slow it down
+- A bug, crash or failing test: use **fault-locality**. This procedure would slow it down
 - No report and no named finding: run **red-flags** (or **design-review**) first, show the report, and let the user choose
 - Findings marked ACCEPTED: they are documented trade-offs, not work items
 

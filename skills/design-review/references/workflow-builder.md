@@ -30,7 +30,7 @@ Don't spawn one agent per file on a codebase with thousands of files. Batch the 
 
 ## Skeleton
 
-The shape, not exact syntax (this evolves; match whatever workflow-scripting conventions your current session actually exposes):
+The shape, not exact syntax (this evolves; match whatever workflow-scripting conventions your current session actually exposes). A panic, a stack, a failing test, or a request to patch the crash is not a triage target: it goes to **fault-locality**, and it is not fanned out to complexity-recognition.
 
 ```text
 phase('Triage')

@@ -1,27 +1,27 @@
 ---
 name: fault-locality
-description: "Use when a failure is already in hand and the question is where it may be fixed: a panic, a stack trace, a failing test, \"this used to work\", or a request to patch the crash in a hurry (\"just nil-check it\", \"just return None\", \"just coerce it\"). The argument is the pace and the route: fast or sure, then locate, repair, or apply. Not when there is no failing output and the user asks whether an interface is awkward, whether to merge types, which tests to keep (use test-worth), or how to apply a design report (use apply-fixes)."
-argument-hint: "[fast|sure] [locate|repair|apply]"
+description: "Use when a failure is already in hand and the question is where it may be fixed: a panic, a stack trace, a failing test, \"this used to work\", or a request to patch the crash in a hurry (\"just nil-check it\", \"just return None\", \"just coerce it\"). The argument is the pace and the route: fast or sure, then locate, show, or apply. Not when there is no failing output and the user asks whether an interface is awkward, whether to merge types, which tests to keep (use test-worth), or how to apply a design report (use apply-fixes)."
+argument-hint: "[fast|sure] [locate|show|apply]"
 user-invocable: true
-allowed-tools: Read, Grep, Edit, Bash
+allowed-tools: Read, Grep, Edit
 ---
 
 # Fault locality
 
-The argument is `pace` then `route`. Default: `fast locate`.
+The argument is `pace` then `route`. Default: `fast locate`. When the argument names no route, a request to patch the crash, or to see the corrected function, is `show`.
 
 Fill the record, run the check, then write the reply. Classify distance before you pick a lens or edit. A lens is only for `leaked`.
 
 | Pace | Check |
 | --- | --- |
-| `fast` | Use the failure and the code already shown. Then run the Falsify observation, if it is not already shown: one test command, or one Read of the file that observation names. |
-| `sure` | Run that falsifier. If the producer function is still not shown, one Read of it. |
+| `fast` | Use the failure and the code already shown. Then one falsifier, if it is not already shown: one Read of the file that observation names, or ask the user to run the one test command and paste the output. Until they paste it, sentence 3 says unchecked. |
+| `sure` | That falsifier. If the producer function is still not shown, one Read of it. |
 
 | Route | After the verdict |
 | --- | --- |
-| `locate` | The reply. No Edit. |
-| `repair` | The reply, plus the edit sentence when the verdict is `local` or `policy`. No Edit. |
-| `apply` | Edit only when the verdict bullet names an edit. `design` and `unconfirmed` name none. Then the reply. |
+| `locate` | The reply. No corrected lines. No Edit. |
+| `show` | The reply, plus the corrected lines when the verdict is `local` or `policy`. No Edit. |
+| `apply` | Edit only when the verdict is `local` or `policy`, and only those lines. `design` and `unconfirmed` name none. Then the reply, including the lines written. |
 
 The reply does not say the bug is fixed.
 
@@ -40,7 +40,7 @@ If the user reported no wrong output, panic, or red test, reply `no failure` and
 
 ## Record
 
-Do not show it. `edit` only on `repair` or `apply` when the verdict is `local` or `policy`. On `apply` it names the change that was written.
+Do not show it. `edit` is the corrected lines on `show` or `apply` when the verdict is `local` or `policy`. It is empty for `design` and `unconfirmed`. On `apply` those are the lines that were written.
 
 ```text
 symptom:
@@ -50,7 +50,7 @@ hypothesis: <one sentence> Falsify: <one observation not already shown>
 evidence:
 lens: none | general-vs-special | error-design | information-hiding | deep-modules | pull-complexity-down
 verdict: local | policy | design | unconfirmed
-edit: <file> <producer> <one sentence>
+edit: <file> <producer> <corrected lines, or empty>
 ```
 
 ## Reply
@@ -58,10 +58,10 @@ edit: <file> <producer> <one sentence>
 Three sentences, in this order:
 
 1. Where the bad value is made.
-2. The patch that would land on the wrong layer, then the verdict.
-3. The falsifier, and whether that check held. If the pace could not run it, say it is unchecked.
+2. The patch that would land on the wrong layer, then the verdict. When the verdict is `design`, name the lens and stop. Opening a lens when the record says `none` is a failed run.
+3. The falsifier, and whether that check held. If it was not run, say it is unchecked.
 
-On `repair` or `apply`, when the verdict is `local` or `policy`, add one sentence naming the edit. On `no failure`, that one line is the whole reply.
+On `show` or `apply`, when the verdict is `local` or `policy`, add the corrected lines. On `no failure`, that one line is the whole reply.
 
 ## Pull request signature
 
