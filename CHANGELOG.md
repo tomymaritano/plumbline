@@ -13,6 +13,7 @@
 
 - **`diagnose`, `red-flags`, and `test-worth`.** A panic, a stack, or a failing test goes to `fault-locality`. A question about which tests to write or keep still goes to `test-worth`. Those suites were not re-run with this description change.
 - **Docs site.** A plumb line hangs beside the page. Each skill is listed as the situation you'd reach for it, and a start-here list routes a panic, a vague worry, a review, and a test question before the catalog.
+- **`fault-locality` contract.** The non-edit route is `show`: the reply plus the corrected lines when the verdict is `local` or `policy`. `diagnose` only names the skill. `design-review` stops before the funnel on a panic, a stack, a failing test, or a request to patch the crash. `apply-fixes` points that case at `fault-locality`. The skill has no shell. The `diagnose`, `design-review`, and `apply-fixes` suites were not re-run. The `fault-locality` suite has not been run.
 
 ## 1.8.0
 

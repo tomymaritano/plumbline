@@ -15,7 +15,7 @@ When invoked with $ARGUMENTS, match the described symptom against the decision t
 
 The report is a wrong output, a panic, or a failing test. The question is where it may be fixed.
 
-→ **fault-locality**: Name the function that made the bad value. Do not route this to a design lens.
+→ **fault-locality**
 
 ### 1. "Something feels wrong but I can't say what"
 
