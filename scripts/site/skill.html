@@ -10,7 +10,7 @@
 <div class="frame">
   {{RAIL}}
   <main>
-    <p class="crumb"><a href="./">Plumbline</a></p>
+    <p class="crumb"><a href="./">Plumbline</a><span id="crumb-here"></span></p>
     <article id="doc"><p>Loading…</p></article>
     <footer>
       <p>Inspired by John Ousterhout's <a href="https://web.stanford.edu/~ouster/cgi-bin/aposd.php"><em>A Philosophy of Software Design</em></a>. Not affiliated with or endorsed by the author or his publishers.</p>
@@ -37,14 +37,30 @@
     const m = md.match(/^---\n([\s\S]*?)\n---\n/);
     const body = m ? md.slice(m[0].length) : md;
     const desc = m && (m[1].match(/^description:\s*"(.*)"$/m) || [])[1];
-    document.title = `${name}${file === "SKILL.md" ? "" : " · " + file.replace("references/", "")} · Plumbline`;
+    const here = file === "SKILL.md" ? "" : file.replace("references/", "").replace(/\.md$/, "");
+    document.title = `${here ? here + " · " : ""}${name} · Plumbline`;
+    if (file !== "SKILL.md") {
+      const crumb = document.getElementById("crumb-here");
+      crumb.textContent = "";
+      crumb.append(" / ");
+      const back = document.createElement("a");
+      back.href = `skill.html?name=${name}`;
+      back.textContent = name;
+      crumb.append(back);
+    }
     const html = marked.parse(body.replaceAll("$ARGUMENTS", "the target you give it"), { mangle: false, headerIds: false });
     doc.innerHTML = (desc ? `<p class="label">When it runs</p><p class="when"></p>` : "") + html;
     if (desc) doc.querySelector(".when").textContent = desc.replaceAll('\\"', '"');
     for (const a of doc.querySelectorAll("a[href]")) {
-      const h = a.getAttribute("href");
-      if (/^references\/[a-z0-9-]+\.md$/.test(h)) a.href = `skill.html?name=${name}&file=${h}`;
-      else if (!/^(https?:|#|\/)/.test(h)) a.href = `skills/${name}/${h}`;
+      const raw = a.getAttribute("href");
+      const hash = raw.includes("#") ? raw.slice(raw.indexOf("#")) : "";
+      const h = raw.split("#")[0];
+      let target = null;
+      if (/^references\/[a-z0-9-]+\.md$/.test(h)) target = h;
+      else if (file.startsWith("references/") && /^[a-z0-9-]+\.md$/.test(h)) target = `references/${h}`;
+      else if (h === "SKILL.md" || h === "../SKILL.md") target = "SKILL.md";
+      if (target) a.href = `skill.html?name=${name}&file=${target}${hash}`;
+      else if (h && !/^(https?:|#|\/)/.test(h)) a.href = `skills/${name}/${file.startsWith("references/") ? "references/" : ""}${h}`;
     }
   }
 

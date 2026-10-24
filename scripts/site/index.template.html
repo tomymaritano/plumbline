@@ -80,7 +80,25 @@ copilot plugin install plumbline@plumbline-plugins</code></pre>
 
     <section class="block">
       <h2 class="label">The checks</h2>
+      <p class="blurb">Each document under a skill is the same file the agent reads.</p>
       {{SKILLS}}
+    </section>
+
+    <section class="block" id="more">
+      <h2 class="label">Besides the checks</h2>
+      <ul class="asks">
+        <li>Call one by name. <code>/plumbline:test-worth</code> decides which tests to write or keep. <code>/plumbline:fault-locality</code> finds where a panic or a red test may be fixed. On a host without the plugin namespace, drop the <code>plumbline:</code> prefix.</li>
+        <li>When an agent opens a pull request after running these checks, the body ends with one <code>Plumbline-Skills:</code> line naming the skills whose checks actually ran.</li>
+        <li>Review on stop is off until you turn it on. In Claude Code, a turn that writes a lot of code can be asked to run <code>red-flags</code> before it finishes. Other agents get the same instruction in the project's <code>AGENTS.md</code>.</li>
+        <li>A review can write <code>.plumbline/findings.md</code> so the next one leads with what changed, and stops repeating a trade-off you already accepted.</li>
+        <li>The skills are Markdown. They send nothing anywhere. <code>test-worth</code> edits tests only after you say yes. <code>fault-locality</code> edits only on <code>apply</code>, and only the function that made the bad value or the missing path to a policy the module already has.</li>
+      </ul>
+      <div class="legend">
+        <a href="doc.html?file=ci-review">
+          <span class="situation">Run a design check on a pull request. It comments only when the change makes the design worse.</span>
+          <span class="name">ci-review</span>
+        </a>
+      </div>
     </section>
 
     <footer>

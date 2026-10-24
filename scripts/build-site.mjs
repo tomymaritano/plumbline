@@ -2,7 +2,7 @@
 // site can't drift from what the plugin ships. No dependencies: the README's
 // "What's Inside" tables give the groups and summaries, each SKILL.md is copied
 // as-is and rendered in the browser.
-import { cpSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 const ROOT = new URL("..", import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1"); // Windows drive paths
@@ -60,7 +60,7 @@ const blurbs = {
   "Clarity & Communication": "Names and comments.",
   "Process & Evolution": "How the design got here.",
   "Diagnostic": "Pick where to start, or apply a review you already have.",
-  "Testing": "Not a design lens. A test stays only if it pays for itself.",
+  "Testing": "Not a design lens. A test stays only if it pays for itself. The rule and the procedures are the documents under the skill.",
 };
 
 const entries = [
@@ -77,6 +77,7 @@ const rail = `<div class="rail" aria-hidden="true"><div class="instrument"><div 
 rmSync(OUT, { recursive: true, force: true });
 mkdirSync(OUT, { recursive: true });
 cpSync(join(ROOT, "skills"), join(OUT, "skills"), { recursive: true });
+cpSync(join(ROOT, "docs"), join(OUT, "docs"), { recursive: true });
 cpSync(join(ROOT, "scripts/site"), OUT, { recursive: true });
 
 for (const name of listed) {
@@ -87,6 +88,28 @@ for (const name of Object.keys(questions)) {
 }
 for (const [name] of entries) {
   if (!listed.has(name)) throw new Error(`start-here skill missing from README: ${name}`);
+}
+
+// Reading order for a skill whose references are one document split across files.
+// Any other reference file is still listed; a name in this list that is gone fails the build.
+const refOrder = {
+  "test-worth": ["pillars.md", "smells.md", "size.md", "behaviors.md", "canon-tdd.md", "legacy.md"],
+};
+
+function referencesFor(name) {
+  const dir = join(ROOT, "skills", name, "references");
+  if (!existsSync(dir)) return [];
+  const files = readdirSync(dir).filter((f) => /^[a-z0-9-]+\.md$/.test(f));
+  const order = refOrder[name] || [];
+  const missing = order.filter((f) => !files.includes(f));
+  if (missing.length) throw new Error(`listed reference missing for ${name}: ${missing.join(", ")}`);
+  const rest = files.filter((f) => !order.includes(f)).sort();
+  return [...order, ...rest].map((file) => {
+    const text = readFileSync(join(dir, file), "utf8");
+    const title = text.match(/^# (.+)$/m);
+    if (!title) throw new Error(`reference has no title: ${name}/references/${file}`);
+    return { file, title: title[1].trim() };
+  });
 }
 
 const entryHtml = entries
@@ -107,13 +130,25 @@ const cards = groups
       <h3>${esc(g.title)}</h3>
       ${blurb ? `<p class="blurb">${esc(blurb)}</p>` : ""}
       <div class="grid">${g.skills
-        .map(
-          (s) => `
-        <a class="card" href="skill.html?name=${s.name}">
-          <span class="q">${esc(questions[s.name])}</span>
-          <span class="name">${s.name}</span>
-        </a>`,
-        )
+        .map((s) => {
+          const refs = referencesFor(s.name);
+          const list = refs.length
+            ? `<ul class="refs">${refs
+                .map(
+                  (r) =>
+                    `<li><a href="skill.html?name=${s.name}&file=references/${r.file}">${esc(r.title)}</a></li>`,
+                )
+                .join("")}</ul>`
+            : "";
+          return `
+        <div class="skill">
+          <a class="card" href="skill.html?name=${s.name}">
+            <span class="q">${esc(questions[s.name])}</span>
+            <span class="name">${s.name}</span>
+          </a>
+          ${list}
+        </div>`;
+        })
         .join("")}
       </div>
     </section>`;
@@ -134,6 +169,8 @@ rmSync(join(OUT, "index.template.html"));
 
 const skillPage = fill(readFileSync(join(OUT, "skill.html"), "utf8"));
 writeFileSync(join(OUT, "skill.html"), skillPage);
+const docPage = fill(readFileSync(join(OUT, "doc.html"), "utf8"));
+writeFileSync(join(OUT, "doc.html"), docPage);
 writeFileSync(join(OUT, ".nojekyll"), "");
 
 console.log(`site: ${listed.size} skills in ${groups.length} groups, v${version} -> ${OUT}`);

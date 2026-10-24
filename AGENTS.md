@@ -8,7 +8,7 @@ Guidance for AI coding agents working in this repository. For what Plumbline is 
 - `agents/`: subagent definitions used by skills (e.g. `clean-room-alternative.md` for `design-it-twice`).
 - `hooks/`: the opt-in review-on-stop hook (`hooks.json`, Node scripts with no dependencies). Tests live in `tests/hooks/` and run with `npm test`.
 - `evals/<skill>/`: `claude plugin eval` suites. Each suite's README explains how to run it and what its graders score.
-- `scripts/build-site.mjs` + `scripts/site/`: the docs site, built from `skills/` and the README's "What's Inside" tables and published to GitHub Pages on each release. A skill missing from those tables fails the build (CI runs it). So does a skill with no one-line question in `build-site.mjs`.
+- `scripts/build-site.mjs` + `scripts/site/`: the docs site, built from `skills/` and the README's "What's Inside" tables and published to GitHub Pages on each release. A skill missing from those tables fails the build (CI runs it). So does a skill with no one-line question in `build-site.mjs`, and a reference file with no title.
 - Platform manifests: `.claude-plugin/`, `.codex-plugin/`, `.cursor-plugin/`, `.kimi-plugin/`, `.grok-plugin/`, `.agents/`, `.codex/`, `.gemini/`, `.opencode/`, `gemini-extension.json`, `plugin.json`, `package.json`.
 
 ## Writing skills
