@@ -1,6 +1,6 @@
 ---
 name: design-review
-description: "Orchestrates a structured design review, running the other skills as a diagnostic funnel from complexity triage to a full red-flags sweep. Use when the user asks for a comprehensive or prioritized design assessment of a file, module, or PR. Not for an open-ended \"anything off here?\" or \"take a look at this\" prompt that names no review goal (use red-flags), a plain diff review before merge or analyzing how code changed over time (use code-evolution), or applying one specific lens (use that skill directly)."
+description: "Orchestrates a structured design review, running the other skills as a diagnostic funnel from complexity triage to a full red-flags sweep. Use when the user asks for a comprehensive or prioritized design assessment of a file, module, or PR. Not for an open-ended \"anything off here?\" or \"take a look at this\" prompt that names no review goal (use red-flags), a plain diff review before merge or analyzing how code changed over time (use code-evolution), or applying one specific lens (use that skill directly). Not for a panic, a stack trace, a failing test, or a request to patch the crash (use fault-locality)."
 argument-hint: "[file, module, or PR to review]"
 allowed-tools: Read, Grep, Bash(git log:*), Bash(git diff:*), Bash(git show:*)
 ---
@@ -12,6 +12,8 @@ When invoked with $ARGUMENTS, scope the entire review to the specified target. R
 This skill does not replace individual lenses. It sequences them into a diagnostic funnel that moves from broad to narrow, skipping work when early phases find nothing actionable.
 
 If the ask is only about tests, this funnel does not apply; use **test-worth**.
+
+If the report is a panic, a stack, a failing test, or a request to patch the crash, this funnel does not apply; use **fault-locality**.
 
 ## Diagnostic Funnel
 
